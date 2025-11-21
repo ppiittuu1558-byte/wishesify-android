@@ -1,6 +1,6 @@
-package com.frogobox.webview
+package com.wishesify.app
 
-import com.frogobox.sdk.FrogoApplication
+import android.app.Application
 
 /**
  * Created by Faisal Amir on 24/10/22
@@ -13,6 +13,6 @@ import com.frogobox.sdk.FrogoApplication
  */
 
 
-class WebApp : FrogoApplication() {
+class WebApp : Application() {
 
 }
