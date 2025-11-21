@@ -24,7 +24,7 @@ jobs:
         run: ./gradlew bundleRelease
 
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wishesify-aab
           path: app/build/outputs/bundle/release/*.aab
