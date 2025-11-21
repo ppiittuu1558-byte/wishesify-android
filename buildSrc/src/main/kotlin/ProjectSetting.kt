@@ -39,7 +39,7 @@ object ProjectSetting {
     const val PROJECT_TARGET_SDK = PROJECT_COMPILE_SDK
 
     val NAME_APK = NAME_APP.lowercase().replace(" ", "-")
-    const val PROJECT_NAME_SPACE = "com.wishesify.app"
+    const val PROJECT_NAME_SPACE = "com.wishesify"
     const val PROJECT_VERSION_CODE = (VERSION_MAJOR * 100) + (VERSION_MINOR * 10) + (VERSION_PATCH * 1)
     const val PROJECT_VERSION_NAME = "$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
 
