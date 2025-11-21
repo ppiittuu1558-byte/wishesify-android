@@ -1,0 +1,12 @@
+[versions]
+agp = "8.12.2"
+kotlin = "2.2.10"
+frogoAndroid = "2.3.2"
+
+[libraries]
+frogo-android = { group = "com.github.frogobox", name = "frogo-sdk", version.ref = "frogoAndroid" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+

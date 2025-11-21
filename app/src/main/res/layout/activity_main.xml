@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.MainActivity">
+
+    <WebView
+        android:id="@+id/main_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ads_view" />
+
+    <include
+        android:id="@+id/ads_view"
+        layout="@layout/ads_banner" />
+
+    <include
+        android:id="@+id/container_failed_view"
+        layout="@layout/view_failed" />
+
+    <include
+        android:id="@+id/container_progress_view"
+        layout="@layout/view_progress" />
+
+</RelativeLayout>
