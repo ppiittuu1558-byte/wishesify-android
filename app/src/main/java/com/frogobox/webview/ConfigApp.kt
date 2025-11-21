@@ -18,7 +18,7 @@ object ConfigApp {
     /**
      * Link for your Website
      */
-    const val URL_LINK_WEBSITE = "https://github.com/amirisback"
+    const val URL_LINK_WEBSITE = "https://wishesify.com"
 
     /**
      * Inline your html text string
