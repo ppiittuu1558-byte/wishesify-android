@@ -1,4 +1,5 @@
 package com.frogobox.webview.common.ext
+import com.wishesify.app.BuildConfig
 
 import com.frogobox.webview.BuildConfig
 
