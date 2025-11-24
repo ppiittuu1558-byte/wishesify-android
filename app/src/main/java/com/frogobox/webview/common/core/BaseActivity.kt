@@ -16,6 +16,7 @@ import com.frogobox.webview.R
 import com.frogobox.webview.common.callback.AdCallback
 import com.frogobox.webview.common.ext.APP_IS_DEBUG
 import com.google.android.ump.FormError
+import com.wishesify.app.R
 
 /**
  * Created by Faisal Amir on 24/10/22
