@@ -13,7 +13,7 @@ import com.frogobox.webview.common.callback.WebViewCallback
 import com.frogobox.webview.common.core.BaseActivity
 import com.frogobox.webview.common.ext.APP_ID
 import com.frogobox.webview.common.ext.loadUrlExt
-import com.frogobox.webview.databinding.ActivityMainBinding
+import com.wishesify.app.databinding.ActivityMainBinding
 import com.frogobox.webview.databinding.DialogRatingAppBinding
 
 
