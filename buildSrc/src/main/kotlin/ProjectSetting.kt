@@ -13,7 +13,7 @@
 
 object ProjectSetting {
     // project settings
-    const val NAME_APP = "WebView"
+    const val NAME_APP = "Wishesify"
 
     // Change This
     // Sample : com.[yourcompanyname].[yourprojectname]
