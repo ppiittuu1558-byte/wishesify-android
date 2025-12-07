@@ -22,7 +22,7 @@ object ProjectSetting {
 
     const val VERSION_MAJOR = 2
     const val VERSION_MINOR = 0
-    const val VERSION_PATCH = 7
+    const val VERSION_PATCH = 8
 
     // Key Store
     const val PLAYSTORE_STORE_FILE = "keystore/frogoboxmedia.jks"
