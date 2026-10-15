@@ -7,7 +7,7 @@
     <package android:name="taxi.android.client"/>
     <intent><action android:name="android.intent.action.VIEW"/><data android:scheme="https" android:host="m.uber.com"/></intent>
   </queries>
-  <application android:label="Taxi Lab test" android:theme="@android:style/Theme.Material.Light.NoActionBar"
+  <application android:label="Taxi Lab Diagnostyka" android:theme="@android:style/Theme.Material.Light.NoActionBar"
       android:allowBackup="false" android:usesCleartextTraffic="false">
     <activity android:name=".MainActivity" android:exported="true" android:resizeableActivity="true">
       <intent-filter>
