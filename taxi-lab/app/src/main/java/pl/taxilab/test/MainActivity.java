@@ -42,8 +42,8 @@ public class MainActivity extends Activity {
         scroll.addView(panel);
         setContentView(scroll);
         panel.addView(text("TAXI LAB / ANDROID", 23, true, Color.rgb(20,44,80)));
-        panel.addView(text("Eksperyment techniczny • wersja 0.1", 14, false, Color.DKGRAY));
-        panel.addView(text("To nie jest jeszcze porównywarka. Nie pobiera cen ani czasów oczekiwania.", 14, true, Color.rgb(135,75,24)));
+        panel.addView(text("Eksperyment techniczny • wersja 0.3", 14, false, Color.DKGRAY));
+        panel.addView(text("To pomiar czasu pojawienia się danych na ekranie; nie gwarantuje prawidłowego rozpoznania oferty.", 14, true, Color.rgb(135,75,24)));
         panel.addView(text("Wspólna trasa do testu",18,true,Color.BLACK));
         from = field("Galeria Echo, Kielce");
         to = field("Sienkiewicza 29, Kielce");
