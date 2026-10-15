@@ -3,11 +3,11 @@ android {
     namespace 'pl.taxilab.test'
     compileSdk 35
     defaultConfig {
-        applicationId 'pl.taxilab.test'
+        applicationId 'pl.taxilab.probe'
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName '0.1-test'
+        versionCode 2
+        versionName '0.2-embedding-diagnostic'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
