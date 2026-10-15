@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +30,7 @@ public class MainActivity extends Activity {
     private static final String FREENOW = "taxi.android.client";
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private EditText from, to;
-    private TextView result, installed;
+    private TextView result, installed, timingInfo;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -50,6 +51,18 @@ public class MainActivity extends Activity {
         panel.addView(from);
         panel.addView(text("Dokąd",13,true,Color.DKGRAY));
         panel.addView(to);
+        panel.addView(text("AUTOMATYCZNY POMIAR CZASU",19,true,Color.rgb(20,80,130)));
+        panel.addView(text("Taxi Lab zmierzy chwile otwarcia wybranego przewoznika oraz pierwsze elementy ekranu przypominajace cene i czas w minutach. Nie odczytuje danych z kont ani nie wysyla informacji na serwer.",13,false,Color.DKGRAY));
+        panel.addView(text("Uprawnienie Dostepnosc jest wrazliwe. Wlacz tylko na czas testow i wylacz po zakonczonym eksperymencie.",13,true,Color.rgb(135,75,24)));
+        panel.addView(btn("WŁĄCZ ODCZYT NA CZAS TESTU", v -> {
+            startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+        }));
+        panel.addView(btn("MIERZ UBER", v -> startTiming(UBER)));
+        panel.addView(btn("MIERZ BOLT", v -> startTiming(BOLT)));
+        panel.addView(btn("MIERZ FREENOW", v -> startTiming(FREENOW)));
+        timingInfo = text("Nie ma jeszcze pomiaru.",14,false,Color.rgb(11,87,94));
+        panel.addView(timingInfo);
+        panel.addView(text("Dla Bolta i FREENOW trase ustawiasz jeszcze recznie. Pomiar obejmuje takze te czynnosc, wiec NIE oznacza czasu przyszlej zautomatyzowanej porownywarki.",12,false,Color.DKGRAY));
         panel.addView(text("Otwieranie bez sklepu Play",18,true,Color.BLACK));
         installed = text("",13,false,Color.DKGRAY);
         panel.addView(installed);
@@ -73,6 +86,7 @@ public class MainActivity extends Activity {
     @Override public void onResume() {
         super.onResume();
         if(installed != null) installed.setText("Uber: "+detected(UBER)+"  •  Bolt: "+detected(BOLT)+"  •  FREENOW: "+detected(FREENOW));
+        if(timingInfo != null) timingInfo.setText((QuoteTimingService.permissionEnabled(this)?"Dostepnosc: WLACZONA":"Dostepnosc: WYLACZONA") + "\\n" + QuoteTimingService.report(this));
     }
     private String detected(String pkg){return getPackageManager().getLaunchIntentForPackage(pkg)==null?"brak":"jest";}
     private int dp(float v){return (int)(v*getResources().getDisplayMetrics().density+0.5f);}
@@ -97,6 +111,20 @@ public class MainActivity extends Activity {
         if(adjacent)intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
         try {startActivity(intent);say("Wysłano polecenie uruchomienia "+pkg+(adjacent?" obok Taxi Lab. O wyniku decyduje Android.":"."));}
         catch(Exception ex){say("Nie uruchomiono: "+ex.getClass().getSimpleName());}
+    }
+    private void startTiming(String pkg) {
+        if(!QuoteTimingService.permissionEnabled(this)){
+            say("Najpierw wlacz uprawnienie Dostepnosc dla Taxi Lab - pomiar czasu ofert. Po wyrazeniu zgody wroc i wybierz pomiar.");
+            return;
+        }
+        Intent intent=getPackageManager().getLaunchIntentForPackage(pkg);
+        if(intent==null){say("Nie wykryto aplikacji przewoznika. Zainstaluj ja przed pomiarem.");return;}
+        QuoteTimingService.begin(this,pkg);
+        try {
+            startActivity(intent);
+        } catch(Exception e) {
+            say("Blad uruchomienia: "+e.getClass().getSimpleName());
+        }
     }
     private void checkEmbedding() {
         PackageManager pm = getPackageManager();
