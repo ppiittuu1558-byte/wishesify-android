@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
     @Override public void onResume() {
         super.onResume();
         if(installed != null) installed.setText("Uber: "+detected(UBER)+"  •  Bolt: "+detected(BOLT)+"  •  FREENOW: "+detected(FREENOW));
-        if(timingInfo != null) timingInfo.setText((QuoteTimingService.permissionEnabled(this)?"Dostepnosc: WLACZONA":"Dostepnosc: WYLACZONA") + "\\n" + QuoteTimingService.report(this));
+        if(timingInfo != null) timingInfo.setText((QuoteTimingService.permissionEnabled(this)?"Dostepnosc: WLACZONA":"Dostepnosc: WYLACZONA") + "\n" + QuoteTimingService.report(this));
     }
     private String detected(String pkg){return getPackageManager().getLaunchIntentForPackage(pkg)==null?"brak":"jest";}
     private int dp(float v){return (int)(v*getResources().getDisplayMetrics().density+0.5f);}
