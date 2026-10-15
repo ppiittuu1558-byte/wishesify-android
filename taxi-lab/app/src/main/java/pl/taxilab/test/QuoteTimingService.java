@@ -55,15 +55,15 @@ public final class QuoteTimingService extends AccessibilityService {
         StringBuilder s = new StringBuilder(name);
         s.append(" — ").append("complete".equals(state)?"wykryto kandydatów":
           "expired".equals(state)?"przekroczono 120 sekund":"w trakcie");
-        s.append("\\nOtwarcie interfejsu: ").append(fmt(focus,t0));
-        s.append("\\nPierwszy tekst przypominający cenę: ").append(fmt(fare,t0));
-        s.append("\\nPierwszy tekst w minutach: ").append(fmt(min,t0));
+        s.append("\nOtwarcie interfejsu: ").append(fmt(focus,t0));
+        s.append("\nPierwszy tekst przypominający cenę: ").append(fmt(fare,t0));
+        s.append("\nPierwszy tekst w minutach: ").append(fmt(min,t0));
         if(fare>0 && min>0) {
             long both=Math.max(fare,min)-t0;
-            s.append("\\nObie informacje po: ").append(String.format(Locale.forLanguageTag("pl-PL"),"%.2f s",both/1000.0));
+            s.append("\nObie informacje po: ").append(String.format(Locale.forLanguageTag("pl-PL"),"%.2f s",both/1000.0));
             s.append(both<=15000?" [cel 15 s: TAK]":" [cel 15 s: NIE]");
         }
-        s.append("\\nUwaga: wykrywanie automatyczne może pomylić cenę kursu z promocją, a czas przyjazdu z długością przejazdu. Wymaga weryfikacji na ekranie.");
+        s.append("\nUwaga: wykrywanie automatyczne może pomylić cenę kursu z promocją, a czas przyjazdu z długością przejazdu. Wymaga weryfikacji na ekranie.");
         return s.toString();
     }
 
