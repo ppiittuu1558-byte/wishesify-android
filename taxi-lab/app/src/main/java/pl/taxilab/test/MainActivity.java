@@ -2,6 +2,9 @@ package pl.taxilab.test;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -59,6 +62,9 @@ public class MainActivity extends Activity {
         panel.addView(text("Android może odmówić podziału ekranu. Zwykle nie da się uzyskać trzech obcych aplikacji obok siebie.",13,false,Color.DKGRAY));
         panel.addView(btn("BOLT W SĄSIEDNIM OKNIE",v -> open(BOLT,true)));
         panel.addView(btn("FREENOW W SĄSIEDNIM OKNIE",v -> open(FREENOW,true)));
+        panel.addView(text("Test zgody na osadzanie obcych aplikacji",18,true,Color.BLACK));
+        panel.addView(text("Kontrolujemy oficjalna flage Androida. Nie odczytujemy ekranu, kont ani cen.",13,false,Color.DKGRAY));
+        panel.addView(btn("SPRAWDZ UBER, BOLT I FREENOW", v -> checkEmbedding()));
         panel.addView(text("Wynik testu",18,true,Color.BLACK));
         result = text("Wybierz przycisk powyżej.",15,true,Color.rgb(11,87,94));
         panel.addView(result);
@@ -91,6 +97,58 @@ public class MainActivity extends Activity {
         if(adjacent)intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
         try {startActivity(intent);say("Wysłano polecenie uruchomienia "+pkg+(adjacent?" obok Taxi Lab. O wyniku decyduje Android.":"."));}
         catch(Exception ex){say("Nie uruchomiono: "+ex.getClass().getSimpleName());}
+    }
+    private void checkEmbedding() {
+        PackageManager pm = getPackageManager();
+        StringBuilder report = new StringBuilder();
+        report.append("Android API: ").append(android.os.Build.VERSION.SDK_INT).append("\n");
+        report.append("Zgoda na osadzanie przez dowolna aplikacje:\n\n");
+        appendEmbeddingReport(pm,report,"Uber",UBER);
+        appendEmbeddingReport(pm,report,"Bolt",BOLT);
+        appendEmbeddingReport(pm,report,"FREENOW",FREENOW);
+        report.append("\nWAZNE: Brak publicznej zgody nie dowodzi braku mozliwej integracji partnerskiej. ");
+        report.append("Zgoda na samo osadzanie nie oznacza zgody na pobieranie cen ani na trzy okna.");
+        say(report.toString());
+    }
+    private void appendEmbeddingReport(PackageManager pm, StringBuilder report, String name, String pkg) {
+        report.append(name).append(" (").append(pkg).append(")\n");
+        if(android.os.Build.VERSION.SDK_INT < 33){
+            report.append("System nie obsluguje standardowego cross-app embedding (wymagany Android 13+).\n\n");
+            return;
+        }
+        try {
+            PackageInfo info=pm.getPackageInfo(pkg,PackageManager.GET_ACTIVITIES);
+            ActivityInfo[] activities=info.activities;
+            if(activities==null||activities.length==0) {
+                report.append("Brak danych o ekranach aplikacji.\n\n"); return;
+            }
+            int enabled=0;
+            StringBuilder names = new StringBuilder();
+            for(ActivityInfo act:activities) {
+                if ((act.flags & ActivityInfo.FLAG_ALLOW_UNTRUSTED_ACTIVITY_EMBEDDING)!=0) {
+                    enabled++;
+                    if(names.length()<220)names.append(" • ").append(act.name).append("\n");
+                }
+            }
+            report.append("Zgoda publiczna: ").append(enabled>0?"TAK":"NIE");
+            report.append(" (").append(enabled).append("/").append(activities.length).append(" ekranow)\n");
+            Intent launch=pm.getLaunchIntentForPackage(pkg);
+            if(launch!=null && launch.getComponent()!=null) {
+                try {
+                    ActivityInfo start=pm.getActivityInfo(launch.getComponent(),0);
+                    boolean allowed=(start.flags & ActivityInfo.FLAG_ALLOW_UNTRUSTED_ACTIVITY_EMBEDDING)!=0;
+                    report.append("Ekran startowy: ").append(allowed?"TAK":"NIE").append("\n");
+                } catch(Exception e) {
+                    report.append("Ekran startowy: nieodczytany\n");
+                }
+            }
+            if(enabled>0)report.append("Wybrane ekrany: \n").append(names);
+        }catch(PackageManager.NameNotFoundException ex){
+            report.append("NIE WYKRYTO pakietu (albo niewidoczny dla testu)\n");
+        }catch(Exception ex){
+            report.append("Blad odczytu: ").append(ex.getClass().getSimpleName()).append("\n");
+        }
+        report.append("\n");
     }
     private void routeUber(){
         if(from.getText().toString().trim().isEmpty()||to.getText().toString().trim().isEmpty()){say("Podaj oba adresy.");return;}
