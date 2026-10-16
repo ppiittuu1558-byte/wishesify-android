@@ -6,8 +6,8 @@ android {
         applicationId 'pl.taxilab.timings'
         minSdk 26
         targetSdk 34
-        versionCode 3
-        versionName '0.3-latency-probe'
+        versionCode 4
+        versionName '0.4-sequential-comparison'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

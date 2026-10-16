@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-  <uses-permission android:name="android.permission.INTERNET" />
-  <queries>
-    <package android:name="com.ubercab"/>
-    <package android:name="ee.mtakso.client"/>
-    <package android:name="taxi.android.client"/>
-    <intent><action android:name="android.intent.action.VIEW"/><data android:scheme="https" android:host="m.uber.com"/></intent>
-  </queries>
-  <application android:label="Taxi Lab Czas" android:theme="@android:style/Theme.Material.Light.NoActionBar"
-      android:allowBackup="false" android:usesCleartextTraffic="false">
-    <service
-        android:name="pl.taxilab.test.QuoteTimingService"
-        android:label="Taxi Lab - pomiar czasu ofert"
-        android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-        android:exported="true">
-      <intent-filter>
-        <action android:name="android.accessibilityservice.AccessibilityService"/>
-      </intent-filter>
-      <meta-data android:name="android.accessibilityservice" android:resource="@xml/quote_probe"/>
-    </service>
-    <activity android:name=".MainActivity" android:exported="true" android:resizeableActivity="true">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-    </activity>
-  </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <queries>
+        <package android:name="com.ubercab"/>
+        <package android:name="ee.mtakso.client"/>
+        <package android:name="taxi.android.client"/>
+    </queries>
+    <application android:label="Taxi Lab Porównaj" android:theme="@android:style/Theme.Material.Light.NoActionBar"
+        android:allowBackup="false" android:usesCleartextTraffic="false">
+        <service android:name=".QuoteTimingService"
+            android:label="Taxi Lab — odczyt ofert tylko podczas testu"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService"/></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/quote_probe"/>
+        </service>
+        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

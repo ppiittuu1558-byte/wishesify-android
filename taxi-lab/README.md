@@ -1,14 +1,15 @@
-# Taxi Lab 0.2 – diagnostyka osadzania aplikacji Android
+# Taxi Lab 0.4 — automatyczne porównanie, eksperyment
+Celem jest użycie jednej trasy, przejście kolejno Bolt → Uber → FREENOW i pokazanie lokalnie odczytanych ofert.
 
-Wersja oddzielna od Taxi Lab 0.1 (nowy identyfikator instalacyjny), by nie nadpisywać wcześniejszej aplikacji.
+## Ograniczenia świadomie widoczne użytkownikowi
+- Android AccessibilityService obsługuje aktywny ekran, a nie trzy aplikacje jednocześnie.
+- Automatyzacja pola wyszukiwania i wybierania sugestii jest heurystyczna: zależy od dostępności kontrolek konkretnych wersji aplikacji.
+- Uber ma oficjalny deeplink przekazujący współrzędne; Bolt i FREENOW nie mają potwierdzonego ogólnodostępnego deeplinku do pobierania ofert.
+- Odczyty (kwota, minuty) są kandydatami, nie potwierdzoną ceną i ETA kierowcy; wymagają testów z rzeczywistymi ekranami.
+- 3 sekundy to cel do zmierzenia, nie osiągnięty wynik. Każdy przewoźnik ma timeout 8,5 s.
+- Żadnego automatycznego zamawiania kursu, zatwierdzania płatności lub wysyłania treści ekranów na serwer.
+- Przy użyciu „Moja lokalizacja” wymagany świeży GPS. W przypadku wyboru odbioru ręcznego należy porównać rzeczywiste punkty odbioru w aplikacjach.
+- Zgodność z regulaminami przewoźników i polityką Google Play wymaga osobnego audytu przed publikacją.
 
-1. Zainstaluj APK na telefonie, na którym działają Uber, Bolt i FREENOW.
-2. Uruchom **Taxi Lab Diagnostyka**, naciśnij **SPRAWDZ UBER, BOLT I FREENOW**.
-3. Zrób zrzut lub przeczytaj liczby: `Zgoda publiczna` i `Ekran startowy` dla trzech przewoźników.
-
-**Co weryfikuje test:** Flaga `ActivityInfo.FLAG_ALLOW_UNTRUSTED_ACTIVITY_EMBEDDING` we wszystkich aktywnościach zainstalowanych aplikacji, wskazująca, czy właściciel pozwala na osadzanie przez dowolnego niezaufanego hosta na Androidzie 13+.
-
-**Czego NIE potwierdza:** Test nie sprawdza certyfikatów zaufanych partnerów, regulaminów, dostępu do cen ani automatyzacji zewnętrznych aplikacji; samodzielna aplikacja nie ma specjalnych uprawnień systemowych do osadzania bez zgody. Brak zgody publicznej oznacza, że Taxi Lab bez autoryzacji nie może korzystać z tej metody. Aby wyświetlać *trzy* żywe podglądy, potrzebne są dodatkowe rozwiązania i ograniczenia rozmiaru.
-
-## Pobieranie
-GitHub Actions > Taxi Lab - APK instalacyjny > ostatnia zakończona sukcesem kompilacja > TaxiLab-APK-test. Plik wynikowy w archiwum: `app-debug.apk`. Nie trzeba instalować Android Studio.
+## Test na telefonie
+Włącz dostępność tylko na czas próby, przyznaj lokalizację, wpisz destynację i naciśnij PORÓWNAJ. Nie dotykaj pozostałych aplikacji; na końcu aplikacja spróbuje powrócić do Taxi Lab. Zrób zrzut wyników. Jeśli wynik jest brakujący, nie został automatycznie zweryfikowany. W razie problemów naciśnij PRZERWIJ TEST.
