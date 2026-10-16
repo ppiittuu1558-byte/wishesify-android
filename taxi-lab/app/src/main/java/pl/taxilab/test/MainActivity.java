@@ -44,7 +44,7 @@ public final class MainActivity extends Activity {
         scroll.addView(box);
         setContentView(scroll);
         box.addView(label("TAXI LAB  /  PORÓWNAJ", 23, true, Color.rgb(20,48,87)));
-        box.addView(label("Wersja testowa 0.4 — automatyczna sekwencja, bez zamawiania kursów", 13, false, Color.DKGRAY));
+        box.addView(label("Wersja testowa 0.4.2 — diagnostyka odczytu ofert, bez zamawiania kursów", 13, false, Color.DKGRAY));
         box.addView(label("Dostępność odczytuje tylko ekrany trzech przewoźników podczas uruchomionego testu. Dane zapisywane są lokalnie. Nie potwierdzaj zamówienia bez sprawdzenia w aplikacji przewoźnika.", 13, false, Color.rgb(125,76,18)));
         box.addView(label("Miejsce odbioru", 15, true, Color.BLACK));
         origin = field("Moja lokalizacja");

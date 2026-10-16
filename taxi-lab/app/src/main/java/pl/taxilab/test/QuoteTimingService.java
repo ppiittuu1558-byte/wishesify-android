@@ -29,6 +29,7 @@ public final class QuoteTimingService extends AccessibilityService {
     private static final String PREFS="taxi_lab_auto_04";
     private static final long PROVIDER_TIMEOUT=8500;
     private static final Pattern PRICE=Pattern.compile("(?iu)(?:\\b(\\d{1,4}(?:[,.]\\d{1,2})?)\\s*(?:zł|PLN)\\b|\\bPLN\\s*(\\d{1,4}(?:[,.]\\d{1,2})?))");
+    private static final Pattern DECIMAL=Pattern.compile("\\b\\d{1,4}[,.]\\d{2}\\b");
     private static final Pattern MIN=Pattern.compile("(?iu)\\b(\\d{1,2})\\s*(?:min\\.?|minut(?:a|y|ę)?|minutes?)\\b");
     private static volatile QuoteTimingService instance;
     private final Handler handler=new Handler(Looper.getMainLooper());
@@ -36,12 +37,13 @@ public final class QuoteTimingService extends AccessibilityService {
     private int index=0, phase=0, stable=0;
     private long stepStart=0, lastAction=0;
     private String origin="", destination="", lastCandidate="", token="";
+    private String lastDiagnostic="Nie uzyskano jeszcze odczytu ekranu.";
     private double[] pickup, dropoff;
     private final Runnable tick=new Runnable(){
         @Override public void run(){
             if(!running) return;
             if(SystemClock.elapsedRealtime()-stepStart>=PROVIDER_TIMEOUT){
-                store(ORDER[index],"brak wyniku (limit 8,5 s)",null,null);
+                store(ORDER[index],"brak wyniku (limit 8,5 s). Diagnostyka: "+lastDiagnostic,null,null);
                 next();
             } else {
                 scan();
@@ -140,6 +142,7 @@ public final class QuoteTimingService extends AccessibilityService {
         phase=0;stable=0;lastCandidate="";lastAction=0;
         stepStart=SystemClock.elapsedRealtime();
         String pkg=ORDER[index];
+        lastDiagnostic="Nie udało się jeszcze odczytać widoku "+label(pkg)+".";
         prefs().edit().putString(k(pkg,"status"),"otwieram i szukam trasy").apply();
         Intent intent=intentFor(pkg);
         if(intent==null){
@@ -228,27 +231,50 @@ public final class QuoteTimingService extends AccessibilityService {
     private void scan(){
         if(!running)return;
         AccessibilityNodeInfo root=getRootInActiveWindow();
-        if(root==null||root.getPackageName()==null||!ORDER[index].equals(root.getPackageName().toString()))return;
+        if(root==null){
+            lastDiagnostic="Android nie udostępnia zawartości aktywnego okna.";
+            return;
+        }
+        if(root.getPackageName()==null){
+            lastDiagnostic="Brak identyfikatora aktywnego okna.";
+            return;
+        }
+        if(!ORDER[index].equals(root.getPackageName().toString())){
+            lastDiagnostic="Aktywny ekran nie należy do "+label(ORDER[index])+".";
+            return;
+        }
         List<Item> ns=nodes(root);
         boolean routeVisible=destinationVisible(ns);
-        if(phase<3 && SystemClock.elapsedRealtime()-lastAction>450) navigate(ns,routeVisible);
-        if(!running)return;
-        // Never claim a fare without seeing the requested destination on this carrier's screen.
-        if(!routeVisible)return;
+        boolean bareDecimal=false;
+        int textNodes=0;
         String price=null, minutes=null;
-        for(Item it:ns) {
+        for(Item it:ns){
             String t=it.txt;
+            if(t.trim().length()>0)textNodes++;
             if(t.length()>250 || normalized(t).matches(".*(rabat|promocja|discount|kupon|voucher).*"))continue;
-            if(price==null) {
+            if(price==null){
                 Matcher m=PRICE.matcher(t);
                 if(m.find())price=(m.group(1)!=null?m.group(1):m.group(2))+" zł";
+            }
+            if(!bareDecimal){
+                Matcher m=DECIMAL.matcher(t);
+                bareDecimal=m.find();
             }
             if(minutes==null){
                 Matcher m=MIN.matcher(t);
                 if(m.find())minutes=m.group(1)+" min";
             }
-            if(price!=null&&minutes!=null)break;
         }
+        lastDiagnostic="Węzły tekstu: "+textNodes
+            +"; cel na ekranie: "+(routeVisible?"tak":"nie")
+            +"; cena z walutą: "+(price!=null?"tak":"nie")
+            +"; kwota dziesiętna: "+(bareDecimal?"tak":"nie")
+            +"; czas w minutach: "+(minutes!=null?"tak":"nie")
+            +"; etap: "+phase+".";
+        if(phase<3 && SystemClock.elapsedRealtime()-lastAction>450) navigate(ns,routeVisible);
+        if(!running)return;
+        // A visible numeric value is NOT enough: the requested destination must be visible.
+        if(!routeVisible)return;
         if(price!=null&&minutes!=null){
             String candidate=price+"|"+minutes;
             if(candidate.equals(lastCandidate))stable++;

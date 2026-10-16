@@ -8,10 +8,10 @@
         <package android:name="ee.mtakso.client"/>
         <package android:name="taxi.android.client"/>
     </queries>
-    <application android:label="Taxi Lab Porównaj" android:theme="@android:style/Theme.Material.Light.NoActionBar"
+    <application android:label="Taxi Lab Diagnostyka v4.2" android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:allowBackup="false" android:usesCleartextTraffic="false">
         <service android:name=".QuoteTimingService"
-            android:label="Taxi Lab — odczyt ofert tylko podczas testu"
+            android:label="Taxi Lab v4.2 — odczyt ofert"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true">
             <intent-filter><action android:name="android.accessibilityservice.AccessibilityService"/></intent-filter>
